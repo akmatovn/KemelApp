@@ -1,0 +1,54 @@
+﻿@using Kemel.Common.Resources
+@using Kendo.Mvc.UI
+
+@(Html.Kendo().Grid<Kemel.WEB.Models.AuthorViewModel>()
+    .Name("gridAuthor")
+    .Columns(col =>
+    {
+        col.Bound(c => c.Name).Title(ResourceRU.Authors);
+        col.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
+    })
+    .ToolBar(toolbar => toolbar.Create())
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .HtmlAttributes(new { style = "height:500px" })
+    .Scrollable()
+    .Sortable()
+    .Filterable()
+    .Pageable(page => page
+        .Enabled(true)
+        .Refresh(true)
+        .PageSizes(true)
+        .ButtonCount(5)
+        .Messages(m => m
+            .Refresh(ResourceRU.Refresh)
+        ))
+    .DataSource(d => d
+            .Ajax()
+            .PageSize(20)
+            .Events(events => events.Error("error_handler"))
+            .Model(model =>
+            {
+                model.Id(p => p.Id);
+            })
+            .Read(read => read.Action("AuthorRead", "AuthorGrid"))
+            .Create(update => update.Action("AuthorCreate", "AuthorGrid"))
+        .Update(update => update.Action("AuthorUpdate", "AuthorGrid"))
+        .Destroy(update => update.Action("AuthorDelete", "AuthorGrid"))
+    )
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>

@@ -1,0 +1,55 @@
+﻿@using Kemel.Common.Resources
+@using Kendo.Mvc.UI
+
+@(Html.Kendo().Grid<Kemel.BLL.Models.PublisherBusinessModel>()
+    .Name("gridPublisher")
+    .Columns(col =>
+    {
+        col.Bound(c => c.Name).Title(ResourceRU.Publisher);
+        col.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
+    })
+    .ToolBar(toolbar => { toolbar.Create(); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .HtmlAttributes(new { style = "height:500px" })
+    .Scrollable()
+    .Sortable()
+    .Filterable()
+    .Pageable(page => page
+        .Enabled(true)
+        .Refresh(true)
+        .PageSizes(true)
+        .ButtonCount(5)
+        .Messages(m => m
+            .Refresh(ResourceRU.Refresh)
+        )
+    )
+    .DataSource(d => d
+        .Ajax()
+        .PageSize(20)
+        .Events(events => events.Error("error_handler"))
+        .Model(model =>
+        {
+            model.Id(p => p.Id);
+        })
+        .Sort(p=>p.Add("Name").Ascending())
+        .Read(read => read.Action("PublisherRead", "PublisherGrid"))
+        .Create(update => update.Action("PublisherCreate", "PublisherGrid"))
+        .Update(update => update.Action("PublisherUpdate", "PublisherGrid"))
+        .Destroy(update => update.Action("PublisherDelete", "PublisherGrid"))
+    ))
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>

@@ -1,0 +1,15 @@
+﻿@(
+        Html.Kendo().MultiSelect()
+            .Name("Authors")
+            .DataTextField("Name")
+            .DataValueField("Id")
+            .Placeholder("- Select -")
+            .DataSource(source =>
+            {
+                source.Read(read =>
+                {
+                    read.Action("LookUpAuthor", "DropDownList");
+                });
+            })
+            .HtmlAttributes(new { style = "width: 100%" })
+)

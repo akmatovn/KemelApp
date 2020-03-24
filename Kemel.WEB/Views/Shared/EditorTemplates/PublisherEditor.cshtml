@@ -1,0 +1,15 @@
+﻿@(
+    Html.Kendo().DropDownList()
+        .Name("PublisherId")
+        .DataTextField("Name")
+        .DataValueField("Id")
+        .OptionLabel("- Select -")
+        .DataSource(source =>
+        {
+            source.Read(read =>
+            {
+                read.Action("LookUpPublisher", "DropDownList");
+            });
+        })
+        .HtmlAttributes(new { style = "width: 100%" })
+    )
